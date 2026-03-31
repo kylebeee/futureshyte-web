@@ -6,16 +6,26 @@ import Markdown from "react-markdown";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
-  const responseRef = useRef<HTMLDivElement>(null);
+  const responseEndRef = useRef<HTMLDivElement>(null);
+  const inputBarRef = useRef<HTMLDivElement>(null);
   const { completion, complete, isLoading } = useCompletion({
     api: "/api/divine",
     streamProtocol: "text",
   });
 
-  // Auto-scroll as text streams in
+  // Auto-scroll as text streams in, accounting for fixed input height
   useEffect(() => {
-    if (completion && responseRef.current) {
-      responseRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    if (!completion || !responseEndRef.current) return;
+    const inputHeight = inputBarRef.current?.offsetHeight ?? 120;
+    const el = responseEndRef.current;
+    const rect = el.getBoundingClientRect();
+    const visibleBottom = window.innerHeight - inputHeight;
+
+    if (rect.bottom > visibleBottom) {
+      window.scrollBy({
+        top: rect.bottom - visibleBottom + 16,
+        behavior: "smooth",
+      });
     }
   }, [completion]);
 
@@ -32,7 +42,7 @@ export default function Home() {
       <div className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-purple-900/10 blur-3xl" />
 
       {/* Scrollable content area */}
-      <main className="relative z-10 flex flex-col items-center gap-8 px-6 pt-16 pb-32 max-w-2xl w-full mx-auto flex-1">
+      <main className="relative z-10 flex flex-col items-center gap-8 px-6 pt-16 pb-44 max-w-2xl w-full mx-auto flex-1">
         {/* Logo / Title */}
         <div className="flex flex-col items-center gap-3">
           <div className="text-6xl animate-float select-none">🔮</div>
@@ -53,7 +63,6 @@ export default function Home() {
 
         {/* Crystal Ball / Response Area */}
         <div
-          ref={responseRef}
           className={`w-full min-h-[160px] rounded-2xl border border-purple-500/20 bg-purple-950/20 backdrop-blur-sm p-6 flex items-center justify-center transition-all duration-500 ${
             isLoading ? "animate-pulse-glow" : ""
           }`}
@@ -72,6 +81,8 @@ export default function Home() {
             </p>
           )}
         </div>
+        {/* Scroll anchor — sits after response content */}
+        <div ref={responseEndRef} />
 
         {/* Disclaimer */}
         {completion && !isLoading && (
@@ -94,6 +105,7 @@ export default function Home() {
 
       {/* Fixed input at bottom */}
       <div
+        ref={inputBarRef}
         className="fixed bottom-0 inset-x-0 z-20 px-4 pb-4"
         style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 16px)" }}
       >
@@ -114,10 +126,10 @@ export default function Home() {
             }}
             placeholder="Ask the oracle anything..."
             rows={2}
-            className="w-full bg-transparent px-4 pt-3 pb-2 text-purple-100 placeholder:text-purple-400/40 focus:outline-none resize-none font-mono text-base"
+            className="w-full bg-transparent px-4 pt-3 pb-0 text-purple-100 placeholder:text-purple-400/40 focus:outline-none resize-none font-mono text-base"
             disabled={isLoading}
           />
-          <div className="flex items-center justify-end px-3 pb-3">
+          <div className="flex items-center justify-end px-3 py-2">
             <button
               type="submit"
               disabled={isLoading || !question.trim()}
