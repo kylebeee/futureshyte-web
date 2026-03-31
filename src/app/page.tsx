@@ -94,26 +94,34 @@ export default function Home() {
 
       {/* Fixed input at bottom */}
       <div
-        className="fixed bottom-0 inset-x-0 z-20 bg-[#0a0a12]/90 backdrop-blur-md border-t border-purple-500/10"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        className="fixed bottom-0 inset-x-0 z-20 px-4 pb-4"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 16px)" }}
       >
         <form
           onSubmit={onSubmit}
-          className="flex items-center gap-0 px-4 py-3 max-w-2xl mx-auto"
+          className="max-w-2xl mx-auto rounded-2xl border border-purple-500/25 overflow-hidden"
         >
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Ask the oracle anything..."
-              className="w-full rounded-full border border-purple-500/30 bg-purple-950/30 pl-4 pr-11 py-3 text-purple-100 placeholder:text-purple-400/40 focus:outline-none focus:border-purple-500/60 focus:ring-1 focus:ring-purple-500/30 transition-all font-mono text-base"
-              disabled={isLoading}
-            />
+          <textarea
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (question.trim() && !isLoading) {
+                  onSubmit(e);
+                }
+              }
+            }}
+            placeholder="Ask the oracle anything..."
+            rows={2}
+            className="w-full bg-transparent px-4 pt-3 pb-2 text-purple-100 placeholder:text-purple-400/40 focus:outline-none resize-none font-mono text-base"
+            disabled={isLoading}
+          />
+          <div className="flex items-center justify-end px-3 pb-3">
             <button
               type="submit"
               disabled={isLoading || !question.trim()}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:hover:bg-purple-600 transition-all cursor-pointer disabled:cursor-not-allowed"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:hover:bg-purple-600 transition-all cursor-pointer disabled:cursor-not-allowed"
             >
               <svg
                 width="16"
