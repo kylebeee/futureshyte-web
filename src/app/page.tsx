@@ -104,7 +104,7 @@ export default function Home() {
       >
         <form
           onSubmit={onSubmit}
-          className="max-w-2xl mx-auto rounded-2xl border border-purple-500/25 bg-purple-950/40 backdrop-blur-md overflow-hidden"
+          className="max-w-2xl mx-auto rounded-2xl border border-purple-500/25 bg-[#0a0a12]/80 backdrop-blur-md overflow-hidden"
         >
           <textarea
             ref={textareaRef}
