@@ -94,14 +94,6 @@ export default function Home() {
           </p>
         )}
 
-        {/* Footer */}
-        <footer className="mt-8 flex flex-col items-center gap-1 text-purple-500/30 text-xs">
-          <p>
-            &copy; 2026 FutureShyte Labs&trade; &middot; A Division of
-            Absolutely Nothing Inc.
-          </p>
-          <p className="font-mono">v0.0.1-alpha-beta-gamma-vibes</p>
-        </footer>
       </main>
 
       {/* Fixed input at bottom */}
