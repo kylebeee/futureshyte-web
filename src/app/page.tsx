@@ -125,7 +125,7 @@ export default function Home() {
               }
             }}
             placeholder="Ask the oracle anything..."
-            rows={2}
+            rows={1}
             className="w-full bg-transparent px-4 pt-3 pb-0 text-purple-100 placeholder:text-purple-400/40 focus:outline-none resize-none font-mono text-base"
             disabled={isLoading}
           />
