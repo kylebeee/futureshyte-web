@@ -8,6 +8,7 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const responseEndRef = useRef<HTMLDivElement>(null);
   const inputBarRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { completion, complete, isLoading } = useCompletion({
     api: "/api/divine",
     streamProtocol: "text",
@@ -114,8 +115,16 @@ export default function Home() {
           className="max-w-2xl mx-auto rounded-2xl border border-purple-500/25 overflow-hidden"
         >
           <textarea
+            ref={textareaRef}
             value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            onChange={(e) => {
+              setQuestion(e.target.value);
+              const ta = textareaRef.current;
+              if (ta) {
+                ta.style.height = "auto";
+                ta.style.height = `${ta.scrollHeight}px`;
+              }
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -126,7 +135,8 @@ export default function Home() {
             }}
             placeholder="Ask the oracle anything..."
             rows={1}
-            className="w-full bg-transparent px-4 pt-3 pb-0 text-purple-100 placeholder:text-purple-400/40 focus:outline-none resize-none font-mono text-base"
+            className="w-full bg-transparent px-4 pt-3 pb-0 text-purple-100 placeholder:text-purple-400/40 focus:outline-none resize-none overflow-hidden font-mono text-base"
+            style={{ maxHeight: "150px" }}
             disabled={isLoading}
           />
           <div className="flex items-center justify-end px-3 py-2">
