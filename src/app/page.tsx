@@ -2,6 +2,7 @@
 
 import { useCompletion } from "@ai-sdk/react";
 import { useEffect, useRef, useState } from "react";
+import Markdown from "react-markdown";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -31,7 +32,7 @@ export default function Home() {
       <div className="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-purple-900/10 blur-3xl" />
 
       {/* Scrollable content area */}
-      <main className="relative z-10 flex flex-col items-center gap-8 px-6 pt-16 pb-48 max-w-2xl w-full mx-auto flex-1">
+      <main className="relative z-10 flex flex-col items-center gap-8 px-6 pt-16 pb-32 max-w-2xl w-full mx-auto flex-1">
         {/* Logo / Title */}
         <div className="flex flex-col items-center gap-3">
           <div className="text-6xl animate-float select-none">🔮</div>
@@ -62,9 +63,9 @@ export default function Home() {
               ✦ Consulting the eternal codebase... ✦
             </p>
           ) : completion ? (
-            <p className="text-purple-100 text-lg leading-relaxed text-center font-serif italic">
-              &ldquo;{completion}&rdquo;
-            </p>
+            <div className="text-purple-100 text-lg leading-relaxed text-center font-serif italic prose prose-invert prose-purple max-w-none prose-p:my-1 prose-strong:text-purple-200 prose-em:text-purple-200 prose-code:text-purple-300 prose-code:bg-purple-900/30 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+              <Markdown>{completion}</Markdown>
+            </div>
           ) : (
             <p className="text-purple-400/40 text-sm text-center">
               The void awaits your question...
@@ -91,29 +92,46 @@ export default function Home() {
         </footer>
       </main>
 
-      {/* Fixed input at bottom — keyboard-avoiding via env(safe-area-inset-bottom) */}
-      <div className="fixed bottom-0 inset-x-0 z-20 bg-[#0a0a12]/90 backdrop-blur-md border-t border-purple-500/10"
+      {/* Fixed input at bottom */}
+      <div
+        className="fixed bottom-0 inset-x-0 z-20 bg-[#0a0a12]/90 backdrop-blur-md border-t border-purple-500/10"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <form
           onSubmit={onSubmit}
-          className="flex gap-2 px-4 py-3 max-w-2xl mx-auto"
+          className="flex items-center gap-0 px-4 py-3 max-w-2xl mx-auto"
         >
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask the oracle anything..."
-            className="flex-1 rounded-xl border border-purple-500/30 bg-purple-950/30 px-4 py-3 text-purple-100 placeholder:text-purple-400/40 focus:outline-none focus:border-purple-500/60 focus:ring-1 focus:ring-purple-500/30 transition-all font-mono text-base"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !question.trim()}
-            className="rounded-xl bg-purple-600/80 hover:bg-purple-600 disabled:opacity-40 disabled:hover:bg-purple-600/80 px-5 py-3 text-sm font-medium text-white transition-all cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
-          >
-            {isLoading ? "Divining..." : "Divine"}
-          </button>
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask the oracle anything..."
+              className="w-full rounded-full border border-purple-500/30 bg-purple-950/30 pl-4 pr-11 py-3 text-purple-100 placeholder:text-purple-400/40 focus:outline-none focus:border-purple-500/60 focus:ring-1 focus:ring-purple-500/30 transition-all font-mono text-base"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !question.trim()}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:hover:bg-purple-600 transition-all cursor-pointer disabled:cursor-not-allowed"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                className={isLoading ? "animate-pulse" : ""}
+              >
+                <path
+                  d="M8 12V4M8 4L4 8M8 4L12 8"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
         </form>
       </div>
     </div>
